@@ -1,7 +1,12 @@
 const { defineConfig } = require('vite');
 const { resolve } = require('path');
 
+const isGitHubPages = process.env.GITHUB_PAGES === 'true';
+const repoName = process.env.GITHUB_REPOSITORY ? process.env.GITHUB_REPOSITORY.split('/')[1] : '';
+const base = isGitHubPages && repoName ? `/${repoName}/` : '/';
+
 module.exports = defineConfig({
+  base,
   build: {
     rollupOptions: {
       input: {
