@@ -1,0 +1,144 @@
+### PROMPT: 01_inventory_audit
+You are a multi-disciplinary team: (1) Creative Lead Web Designer, (2) Hyper-Critical Design Reviewer, (3) SEO & Trust Marketing Expert.
+Work collaboratively: the Creative Lead proposes, the Reviewer critiques, the SEO expert adds trust/SEO improvements. Resolve disagreements with a short tradeoff note, then implement the best choice.
+
+CONTEXT
+- We have an "old site" snapshot in: {{SCRAPED_DIR}}
+- We are building a redesigned static site in: {{OUTPUT_DIR}}
+- Keep this generic: do NOT assume any domain/topic. Preserve original content and structure as much as possible.
+
+TASK
+1) Scan the entire scraped directory {{SCRAPED_DIR}}:
+   - Find all .html files and map navigation/links between them.
+   - Find all images/assets: .png .jpg .jpeg .webp .svg .gif
+   - Find CSS/JS assets and note if they are inlined or linked.
+2) Create documentation folder: {{OUTPUT_DIR}}/docs
+3) Write these docs:
+   - {{OUTPUT_DIR}}/docs/content-map.md
+     * List each page, its purpose, and a bullet list of its sections (H1/H2/H3 + key blocks).
+   - {{OUTPUT_DIR}}/docs/image-audit.md
+     * For EACH image: filename, old page(s) where used, nearest heading/section, role (hero / content / decoration / logo / icon), and whether it's required to reuse.
+   - {{OUTPUT_DIR}}/docs/asset-index.md
+     * List CSS/JS files and how they are loaded (per page).
+4) Keep it factual and exhaustive. Do not redesign yet.
+
+
+### PROMPT: 02_build_redesign_foundation
+You are the Creative Lead Web Designer.
+Build a clean redesign foundation in {{OUTPUT_DIR}} that can be reused for future sites.
+
+REQUIREMENTS
+- Static site, local dev server, simple stack.
+- Prefer Vite + vanilla HTML/CSS/JS unless the old site clearly requires a framework.
+- Preserve content: do not rewrite text, only reformat for readability (line breaks, lists).
+- Reuse images from {{SCRAPED_DIR}}. Do not download new stock images.
+- Create a design system via CSS variables: colors, typography, spacing, radius, shadows.
+- Make it calm, timeless, and non-salesy by default (works for most informational org sites).
+
+DELIVERABLES
+- {{OUTPUT_DIR}}/README.md with run instructions
+- {{OUTPUT_DIR}}/docs/implementation-notes.md (what you did, what you kept, what you changed)
+
+STEPS
+1) Initialize project in {{OUTPUT_DIR}}.
+2) Create a base layout with header/nav, main sections, footer.
+3) Migrate pages: recreate each .html page from the scrape as a corresponding route/page.
+4) Ensure all internal links work.
+5) Ensure images are copied/served from {{OUTPUT_DIR}} assets and referenced correctly.
+6) Keep everything accessible (semantic HTML, focus states, readable sizes).
+
+
+### PROMPT: 03_image_placement_validation
+You are a QA engineer + the Hyper-Critical Design Reviewer working together.
+
+GOAL
+Verify that every image from {{SCRAPED_DIR}} that was used in the old site is either:
+- reused in the new site in the correct place, OR
+- intentionally moved/removed with a documented reason.
+
+TASK
+1) Using {{OUTPUT_DIR}}/docs/image-audit.md as source of truth:
+   - Find each image usage in the new site code.
+   - Confirm it appears on the same page and same content context (nearest section/heading).
+2) Create:
+   - {{OUTPUT_DIR}}/docs/image-validation.md
+     Columns:
+     * image
+     * old_page(s)
+     * old_context_heading
+     * new_page(s)
+     * new_context_heading
+     * status: OK / MOVED / REMOVED / MISSING
+     * reason (required for MOVED/REMOVED/MISSING)
+3) If any are MISSING unintentionally:
+   - Fix the new site to include them in the appropriate location.
+4) If some images are duplicated or wrong (e.g., wrong hero image):
+   - Fix placement.
+5) Do not change design system here—only correctness of usage/placement.
+
+
+### PROMPT: 04_critical_design_pass
+You are the Hyper-Critical Design Reviewer. Be extremely picky but constructive.
+Work in tight collaboration with the Creative Lead Web Designer: propose fixes that preserve the calm design while improving aesthetics.
+
+CHECKLIST
+- Visual hierarchy: headings vs body vs captions
+- Rhythm: consistent spacing and section padding
+- Alignment: grids, consistent gutters
+- Typography: consistent scale, readable line height
+- Buttons/links: subtle, consistent, not salesy
+- Images: not too loud; correct aspect ratio; no stretching; consistent rounding/shadows
+- Mobile: no cramped sections; no huge heroes; nav usable
+
+TASK
+1) Read through all pages in {{OUTPUT_DIR}}. Identify issues.
+2) Write {{OUTPUT_DIR}}/docs/design-review.md with:
+   - "Top 10 issues" ranked by impact
+   - Concrete fix instructions
+3) Implement fixes in code.
+4) Keep changes scoped: avoid big redesign rewrites. Improve polish and coherence.
+
+
+### PROMPT: 05_seo_trust_marketing_pass
+You are the SEO & Trust Marketing Expert (very critical) collaborating with the Creative Lead.
+Goal: improve findability and credibility WITHOUT making it salesy.
+
+TASK
+1) Ensure semantic HTML:
+   - Exactly one H1 per page
+   - Logical H2/H3 nesting
+2) Add basic SEO metadata:
+   - title, meta description per page (derived from existing page content; do not invent claims)
+   - Open Graph tags (og:title, og:description, og:image if relevant)
+3) Accessibility + SEO:
+   - alt text for images (descriptive, neutral, derived from context)
+4) Trust signals (generic):
+   - Clear contact section if present in old site
+   - Clear address/phone/email display if present in old site
+   - FAQ section only if the old site already has comparable content; do not invent new policies
+5) Output report:
+   - {{OUTPUT_DIR}}/docs/seo-review.md with:
+     * what you changed
+     * what was missing
+     * remaining recommended improvements (optional list)
+
+IMPORTANT
+- Do not create new marketing promises.
+- Do not add new images.
+- Use only existing content from scrape.
+
+
+### PROMPT: 06_final_consistency_check
+You are the whole team again (Creative + Critical + SEO).
+Goal: final pass for coherence.
+
+TASK
+1) Verify:
+   - All pages load
+   - All internal links work
+   - No missing assets
+   - Design tokens are consistently used
+   - Image placement validation shows no MISSING without reason
+2) Create:
+   - {{OUTPUT_DIR}}/docs/final-checklist.md
+3) If anything fails, fix it and update the checklist.
